@@ -1,0 +1,21 @@
+authors:
+- Cyril MARIN <marin.cyril@gmail.com>
+build_ignore:
+- '*.gitkeep'
+dependencies: {}
+description: Manage entries from your Team Password Manager instance
+issues: https://github.com/ziouf/ansible_collections/issues
+license:
+- GPL-2.0-or-later
+license_file: ''
+name: tpm
+namespace: ziouf
+readme: README.md
+repository: https://github.com/ziouf/ansible_collections
+tags:
+- tpm
+- password
+- passwords
+- secret
+- secrets
+version: 1.0.0

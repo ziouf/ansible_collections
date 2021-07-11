@@ -1,0 +1,21 @@
+---
+# vars file for install
+
+install_dir: /opt/nexus
+data_dir: /var/lib/nexus
+
+release_url:
+  Linux: https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+  Win32NT: https://download.sonatype.com/nexus/3/latest-win64.zip
+  OSX: https://download.sonatype.com/nexus/3/latest-mac.tgz
+
+
+required_pkgs:
+  apt:
+    - openjdk-8-jre
+  yum:
+    - java-1.8.0-openjdk
+  dnf:
+    - java-1.8.0-openjdk
+
+

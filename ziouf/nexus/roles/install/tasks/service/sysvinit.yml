@@ -1,0 +1,12 @@
+
+- name: Register service
+  file:
+    src: /opt/nexus/current/bin/nexus
+    dest: /etc/init.d/nexus
+    state: link
+
+- name: Ensure service is started
+  sysvinit:
+      name: nexus
+      state: started
+      enabled: yes

@@ -1,0 +1,44 @@
+
+- name: Apply configuration files
+  template:
+    src: "{{ template_item }}.j2"
+    dest: "{{ install_dir }}/bin/{{ template_item }}"
+  loop:
+    - nexus.properties
+    - nexus.vmoptions
+  loop_control:
+    loop_var: template_item
+
+- include_tasks:
+    file: "service/{{ ansible_service_mgr }}.yml"
+
+- name: Wait until service is up and running
+  uri:
+    url: "http://{{ inventory_hostname }}:8081/service/rest/v1/status"
+    method: GET
+    staus_code: 200
+  register: service_state
+  until: service_state.status == 200
+  retries: 12
+  delay: 5
+ 
+- when: admin_password is defined
+  block:
+    - name: Read default admin password
+      slurp:
+        src: "{{ install_dir }}/sonatype-work/nexus3/admin.password"
+      register: default_admin_password
+
+    - name: Reset admin password
+      uri: 
+        url: "http://{{ inventory_hostname }}:8081/service/rest/v1/security/users/admin/change-password"
+        method: PUT
+        headers:
+          Content-Type: text/plain
+        body: "{{ admin_password }}"
+
+    - name: Delete default admin password file
+      file:
+        path: "{{ install_dir }}/sonatype-work/nexus3/admin.password"
+        state: absent
+      

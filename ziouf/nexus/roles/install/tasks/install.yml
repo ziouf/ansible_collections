@@ -1,0 +1,24 @@
+
+- name: Ensure install directory exists
+  file:
+    path: "{{ install_dir }}"
+    state: directory
+
+- name: Extract packages
+  unarchive:
+    src: "{{ release_url[ansible_system] }}"
+    dest: "{{ install_dir }}"
+    remote_src: yes
+    owner: nexus
+    group: root
+    mode: u=rwX,g=rX,o-rwX
+    creates: "{{ install_dir }}/sonatype-work"
+  register: extracted_package
+
+- name: Set current version symlink
+  file:
+    path: "{{ install_dir }}/{{ extracted_package.files | map('dirname') | map('regex_search', '^nexus-\d+(\.\d+)+(-\d+)?$') | first }}"
+    dest: "{{ install_dir }}/current"
+    state: link
+    owner: nexus
+    group: root

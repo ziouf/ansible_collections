@@ -1,0 +1,17 @@
+authors:
+- Cyril MARIN <marin.cyril@gmail.com>
+build_ignore:
+- '*.gitkeep'
+dependencies: {}
+description: Sonatype Nexus roles
+issues: https://github.com/ziouf/ansible_collections/issues
+license:
+- GPL-2.0-or-later
+license_file: ''
+name: nexus
+namespace: ziouf
+readme: README.md
+repository: https://github.com/ziouf/ansible_collections
+tags:
+- nexus
+version: 1.0.0

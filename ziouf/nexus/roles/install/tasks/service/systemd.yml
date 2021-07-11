@@ -1,0 +1,14 @@
+
+- name: Register service
+  template:
+    src: systemd/unit.j2
+    dest: /etc/systemd/system/nexus.service
+    owner: root
+    group: root
+    mode: u=rw,go=r
+
+- name: Ensure service is started
+  systemd:
+    daemon_reload: yes
+    name: nexus
+    state: started

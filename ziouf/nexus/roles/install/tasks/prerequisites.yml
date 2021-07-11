@@ -1,0 +1,10 @@
+
+- name: Install required packages
+  package:
+    name: "{{ required_pkgs[ansible_pkg_mgr] }}"
+
+- name: Ensure application user exists
+  user:
+    name: nexus
+    state: present
+  

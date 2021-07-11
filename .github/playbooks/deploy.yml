@@ -1,0 +1,66 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    galaxy_token: "{{ lookup('env', 'ANSIBLE_GALAXY_TOKEN') }}"
+    base_directory: "{{ lookup('env', 'GITHUB_WORKSPACE') }}"
+
+  tasks:
+    - name: Find all collections
+      find:
+        file_type: file
+        path: 
+          - "{{ base_directory }}"
+        patterns: "galaxy.yml"
+        recurse: yes
+      register: galaxy_files
+
+    - name: Get date time
+      setup:
+        filter: ansible_date_time
+
+    - name: Update version
+      copy:
+        dest: "{{ file_item.path }}"
+        content: "{{ file_content | combine(patch) | to_nice_yaml }}"
+      vars:
+        file_content: "{{ lookup('file', file_item.path) | from_yaml }}"
+        version_fields:
+          - "{{ ansible_date_time.year  |int }}"
+          - "{{ ansible_date_time.month |int }}"
+          - "{{ ansible_date_time.day   |int }}"
+        patch:
+          version: "{{ version_fields | join('.') }}-{{ lookup('env', 'GITHUB_RUN_ID') }}"
+      loop: "{{ galaxy_files.files }}"
+      loop_control:
+        loop_var: file_item
+
+    - name: Build collections
+      command:
+        cmd: ansible-galaxy collection build {{ collection_path }} --token {{ galaxy_token | mandatory }} --force
+        chdir: "{{ base_directory }}"
+      vars:
+        collection_path: "{{ file_item.path | dirname }}"
+      loop: "{{ galaxy_files.files }}"
+      loop_control:
+        loop_var: file_item
+
+    - name: Publish collections to Ansible Galaxy
+      command:
+        cmd: ansible-galaxy collection publish {{ collection_package }} --token {{ galaxy_token | mandatory }} --import-timeout 60
+        chdir: "{{ base_directory }}"
+      loop: "{{ q('fileglob', base_directory + '/*.tar.gz') }}"
+      loop_control:
+        loop_var: collection_package
+      register: publish_output
+      changed_when: publish_output.rc == 0
+      failed_when: >
+        (
+          publish_output.rc == 1 and
+          (publish_output.stderr | regex_search('.+HTTP Code: (\d+).+', '\\1') | default(['400']) | first) not in ['409']
+        ) or (
+          publish_output.rc > 1
+        )
+
