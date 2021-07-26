@@ -57,7 +57,7 @@ jobs:
         
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
-        working-directory: ziouf/${{ matrix.module }}
+        working-directory: collections/ziouf/${{ matrix.module }}
 
 
   deploy:
