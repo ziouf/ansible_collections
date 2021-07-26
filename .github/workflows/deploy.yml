@@ -7,7 +7,6 @@ on:
     branches:
       - "master"
 
-
 jobs:
   test:
     strategy:
@@ -27,9 +26,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: echo $GITHUB_WORKSPACE
+
       - uses: actions/checkout@v2
-        env:
-          GITHUB_WORKSPACE: /home/runner/work
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -56,8 +55,6 @@ jobs:
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
         working-directory: ziouf/${{ matrix.module }}
-        env:
-          ANSIBLE_COLLECTIONS_PATHS: /home/runner/work/ansible_collections/ansible_collections
 
 
   deploy:
@@ -80,6 +77,6 @@ jobs:
         run: python -m pip install ansible
 
       - name: Deploy collections
-        run: ansible-playbook -i 'localhost,' .github/playbooks/deploy.yml -vvv
+        run: ansible-playbook -i 'localhost,' ${{github.action_path}}/playbooks/deploy.yml -vvv
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
