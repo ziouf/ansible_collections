@@ -34,7 +34,7 @@ jobs:
           path: 'collections'
 
       - name: Debug
-        run: ls -lah collections/tpm/*
+        run: ls -lah collections/ziouf/tpm/*
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
