@@ -51,9 +51,8 @@ jobs:
         
       - name: Run tests
         run: |
-          export ANSIBLE_COLLECTIONS_PATH=$(pwd);
           for D in ziouf/*/tests/unit; do
-            pushd "${D}"
+            pushd "${D%/tests/unit}"
             ansible-test units --python ${{ matrix.python-version }} -vvv
             popd
           done
