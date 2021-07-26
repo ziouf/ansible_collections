@@ -12,6 +12,7 @@ jobs:
 
     strategy:
       fail-fast: true
+      max-parallel: 1
       matrix:
         python-version: 
         - 3.6
