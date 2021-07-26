@@ -38,7 +38,10 @@ options:
         description: Field to be return
         required: False
         default: password
-    all:
+    id:
+        description: Id of wanted secret
+        required: False
+    wantlist:
         description: Return all results
         required: False
         type: bool
@@ -97,7 +100,7 @@ from ..module_utils.api import TpmPasswordApi
 from ..module_utils.base_lookup import TpmLookupBase
 
 
-class LookupModule(LookupBase, TpmLookupBase, TpmPasswordApi):
+class LookupModule(LookupBase, TpmPasswordApi):
     display: Display = Display()
 
     def run(self, terms, variables=None, **kwargs):
@@ -143,7 +146,7 @@ class LookupModule(LookupBase, TpmLookupBase, TpmPasswordApi):
             self.display.debug(
                 msg='Query: "{q}" | Result: {r}'.format(q=query, r=result))
 
-            if self.get_option('all') or False:
+            if self.get_option('wantlist') or False:
                 return result
 
             return [next(r for r in result)]
