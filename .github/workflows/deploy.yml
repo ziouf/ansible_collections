@@ -17,7 +17,7 @@ jobs:
         # - 3.6
         # - 3.7
         - 3.8
-        - 3.9
+        # - 3.9
         module: 
           - tpm
           # - nexus
@@ -30,11 +30,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          path: 'collections'
-
-      - name: Debug
-        run: ls -lah collections/ziouf/tpm/*
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -60,7 +55,7 @@ jobs:
         
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
-        working-directory: ./collections/ziouf/${{ matrix.module }}
+        working-directory: ziouf/${{ matrix.module }}
 
 
   deploy:
