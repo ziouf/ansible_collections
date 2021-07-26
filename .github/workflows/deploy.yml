@@ -58,7 +58,8 @@ jobs:
         working-directory: ziouf/${{ matrix.module }}
 
   deploy:
-
+    needs: test
+    
     runs-on: ubuntu-latest
 
     steps:
