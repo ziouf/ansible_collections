@@ -7,6 +7,9 @@ on:
     branches:
       - "master"
 
+env:
+  ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+
 jobs:
   test:
     strategy:
@@ -24,9 +27,6 @@ jobs:
           # - raspberrypi
   
     runs-on: ubuntu-latest
-
-    env:
-      ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
