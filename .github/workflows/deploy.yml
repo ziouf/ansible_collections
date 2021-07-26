@@ -26,9 +26,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo $GITHUB_WORKSPACE
-
       - uses: actions/checkout@v2
+
+      - run: mv ${HOME}/work/ansible_collections/ansible_collections ${HOME}/collections
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -54,7 +54,7 @@ jobs:
         
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
-        working-directory: ziouf/${{ matrix.module }}
+        working-directory: ${{HOME}}/collections/ziouf/${{ matrix.module }}
 
 
   deploy:
