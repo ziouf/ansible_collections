@@ -1,5 +1,5 @@
 
-name: Deploy
+name: Test & Deploy
 
 on:
   # Triggers the workflow on tags
@@ -8,18 +8,21 @@ on:
       - "master"
 
 jobs:
-  deploy:
-
+  test:
     strategy:
       fail-fast: true
       max-parallel: 1
       matrix:
         python-version: 
-        - 3.6
-        - 3.7
+        # - 3.6
+        # - 3.7
         - 3.8
         - 3.9
-
+        module: 
+          - tpm
+          # - nexus
+          # - raspberrypi
+  
     runs-on: ubuntu-latest
 
     env:
@@ -51,12 +54,29 @@ jobs:
           resolvelib
         
       - name: Run tests
-        run: |
-          for D in ziouf/*/tests/unit; do
-            pushd "${D%/tests/unit}"
-            ansible-test units --python ${{ matrix.python-version }} -vvv
-            popd
-          done
+        run: ansible-test units --python ${{ matrix.python-version }} -vvv
+        working-directory: ziouf/${{ matrix.module }}
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Upgrade pip
+        run: >-
+          python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: >-
+          python -m pip install 
+          ansible
 
       - name: Deploy collections
         run: ansible-playbook -i 'localhost,' .github/playbooks/deploy.yml
