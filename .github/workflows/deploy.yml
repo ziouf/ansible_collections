@@ -23,6 +23,7 @@ jobs:
 
     env:
       ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
+      ANSIBLE_COLLECTIONS_PATH: /home/runner/work/ansible_collections/ansible_collections
 
     steps:
       - uses: actions/checkout@v2
