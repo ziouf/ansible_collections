@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: mv ${HOME}/work/ansible_collections/ansible_collections ${HOME}/collections
+      - run: cp -r ${HOME}/work/ansible_collections/ansible_collections ${HOME}/collections
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
