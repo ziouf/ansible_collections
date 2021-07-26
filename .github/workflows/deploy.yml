@@ -23,7 +23,6 @@ jobs:
 
     env:
       ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
-      ANSIBLE_COLLECTIONS_PATH: /home/runner/work/ansible_collections/ansible_collections
 
     steps:
       - uses: actions/checkout@v2
@@ -52,6 +51,7 @@ jobs:
         
       - name: Run tests
         run: |
+          export ANSIBLE_COLLECTIONS_PATH=$(pwd);
           for D in ziouf/*/tests/unit; do
             pushd "${D}"
             ansible-test units --python ${{ matrix.python-version }} -vvv
