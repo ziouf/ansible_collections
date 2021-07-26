@@ -30,9 +30,11 @@ jobs:
       - name: Run tests
         run: |
           for D in ziouf/*; do
-            pushd "${D}"
-            ansible-test units --venv -v --python 3.9
-            popd
+            [ -d "${D}/tests/unit" ] && {
+              pushd "${D}"
+              ansible-test units --venv -v --python 3.9
+              popd
+            }
           done
 
       - name: Deploy collections
