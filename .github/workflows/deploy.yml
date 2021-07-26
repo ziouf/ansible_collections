@@ -30,6 +30,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: '../'
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -57,7 +59,7 @@ jobs:
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
         working-directory: ziouf/${{ matrix.module }}
 
-        
+
   deploy:
     needs: test
 
