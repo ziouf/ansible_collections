@@ -39,7 +39,7 @@ options:
         description: Field to be return
         required: False
         default: id
-    all:
+    wantlist:
         description: Return all results
         required: False
         type: bool
@@ -76,8 +76,8 @@ from ..module_utils.api import TpmProjectApi
 from ..module_utils.base_lookup import TpmLookupBase
 
 
-class LookupModule(LookupBase, TpmLookupBase, TpmProjectApi):
-    display: Display = Display()
+class LookupModule(LookupBase, TpmProjectApi):
+    display = Display()
 
     def run(self, terms, variables=None, **kwargs):
         self.set_options(task_keys=TpmLookupBase.task_keys(
@@ -94,7 +94,7 @@ class LookupModule(LookupBase, TpmLookupBase, TpmProjectApi):
 
         return [self.fn_map(item) for item in self.fn_find(next(query for query in terms))]
 
-    def fn_map(self, item: dict) -> dict:
+    def fn_map(self, item):
         print(self._options)
         if self.get_option('field') == 'all':
             return item
@@ -102,7 +102,7 @@ class LookupModule(LookupBase, TpmLookupBase, TpmProjectApi):
             return item[self.get_option('field')]
         return item
 
-    def fn_find(self, query: str) -> dict:
+    def fn_find(self, query):
         try:
             self.display.vv(
                 msg='Searching matching projects for query : "{q}"'.format(q=query))
@@ -116,11 +116,11 @@ class LookupModule(LookupBase, TpmLookupBase, TpmProjectApi):
             self.display.debug(
                 msg='Query: "{q}" | Result: {r}'.format(q=query, r=result))
 
-            if self.get_option('all') or False:
+            if self.get_option('wantlist') or False:
                 return result
 
             return [next(r for r in result)]
 
         except Exception as e:
             msg = 'Query "{q}" did not match any result'.format(q=query)
-            raise AnsibleError(msg) from e
+            raise AnsibleError(e, msg)
