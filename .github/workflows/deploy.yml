@@ -51,7 +51,9 @@ jobs:
           resolvelib
         
       - name: Run tests
-        run: ansible-test units --python ${{ matrix.python-version }} -vvv
+        run: >-
+          ANSIBLE_COLLECTIONS_PATHS=${{ github.workspace }}
+          ansible-test units --python ${{ matrix.python-version }} -vvv
         working-directory: ziouf/${{ matrix.module }}
 
 
