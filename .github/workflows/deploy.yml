@@ -49,12 +49,13 @@ jobs:
           pytest-xdist
           pyyaml
           resolvelib
+
+      - name: Prepare tests
+        run: cp -r ziouf ${{ runner.temp }}/
         
       - name: Run tests
-        run: >-
-          ANSIBLE_COLLECTIONS_PATHS=${{ github.workspace }}
-          ansible-test units --python ${{ matrix.python-version }} -vvv
-        working-directory: ziouf/${{ matrix.module }}
+        run: ansible-test units --python ${{ matrix.python-version }} -vvv
+        working-directory: ${{ runner.temp }}/ziouf/${{ matrix.module }}
 
 
   deploy:
