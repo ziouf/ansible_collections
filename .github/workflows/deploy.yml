@@ -14,7 +14,6 @@ jobs:
       max-parallel: 1
       matrix:
         python-version: 
-        - 2.6
         - 2.7
         - 3.5
         - 3.6
