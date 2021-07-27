@@ -29,7 +29,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo ${{ toJson(github) }}
+      - run: |-
+          echo "${{ toJson(github) }}"
+          ls -lah 
 
       - uses: actions/checkout@v2
 
