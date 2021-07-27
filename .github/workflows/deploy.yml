@@ -30,7 +30,6 @@ jobs:
 
     steps:
       - run: |-
-          echo "${{ toJson(github) }}"
           ls -lah 
 
       - uses: actions/checkout@v2
