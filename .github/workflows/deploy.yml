@@ -51,7 +51,9 @@ jobs:
           resolvelib
 
       - name: Prepare tests
-        run: cp -r ziouf ${{ runner.temp }}/ansible_collections/
+        run: |-
+          mkdir -p ${{ runner.temp }}/ansible_collections/
+          cp -r ${{ github.workspace }}/ziouf ${{ runner.temp }}/ansible_collections/
         
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
