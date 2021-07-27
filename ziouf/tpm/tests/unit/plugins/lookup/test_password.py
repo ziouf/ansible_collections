@@ -16,7 +16,7 @@ from unittest.mock import (
 # from ansible_collections.ziouf.tpm.plugins.lookup import password
 from ansible.plugins.loader import lookup_loader
 
-MOCK_RESPONSE_FIND:list = [
+MOCK_RESPONSE_FIND = [
     {
         "id": 0,
         "name": "test0",
@@ -26,7 +26,7 @@ MOCK_RESPONSE_FIND:list = [
         "name": "test1",
     },
 ]
-MOCK_RESPONSE_GET:dict = {
+MOCK_RESPONSE_GET = {
     0: {
         "id": 0,
         "name": "test0",
