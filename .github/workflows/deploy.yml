@@ -51,11 +51,11 @@ jobs:
           resolvelib
 
       - name: Prepare tests
-        run: cp -r ziouf ${{ runner.temp }}/
+        run: cp -r ziouf ${{ runner.temp }}/ansible_collections/
         
       - name: Run tests
         run: ansible-test units --python ${{ matrix.python-version }} -vvv
-        working-directory: ${{ runner.temp }}/ziouf/${{ matrix.module }}
+        working-directory: ${{ runner.temp }}/ansible_collections/ziouf/${{ matrix.module }}
 
 
   deploy:
