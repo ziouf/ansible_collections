@@ -9,7 +9,7 @@ class TpmLookupBase():
     """TPM Lookup Module base implementation"""
 
     @staticmethod
-    def task_keys(variables: dict) -> dict:
+    def task_keys(variables):
         keys = {
             'hostname': 'TPM_HOST',
             'public_key': 'TPM_PUBLIC_KEY',

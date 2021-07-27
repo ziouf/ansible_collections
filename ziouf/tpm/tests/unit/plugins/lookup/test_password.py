@@ -8,10 +8,18 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from unittest import TestCase
-from unittest.mock import (
-    patch,
-    MagicMock,
-)
+
+try:                                # Python 3+
+    from unittest.mock import (
+        patch,
+        MagicMock,
+    )
+except ImportError:                 # Python 2.x
+    from mock import (
+        patch, 
+        MagicMock,
+    )
+
 
 # from ansible_collections.ziouf.tpm.plugins.lookup import password
 from ansible.plugins.loader import lookup_loader

@@ -101,7 +101,7 @@ from ..module_utils.base_lookup import TpmLookupBase
 
 
 class LookupModule(LookupBase, TpmPasswordApi):
-    display: Display = Display()
+    display = Display()
 
     def run(self, terms, variables=None, **kwargs):
         self.set_options(task_keys=TpmLookupBase.task_keys(
@@ -124,14 +124,14 @@ class LookupModule(LookupBase, TpmPasswordApi):
 
         return [self.fn_map(item) for item in self.fn_find(next(query for query in terms))]
 
-    def fn_map(self, item: dict) -> dict:
+    def fn_map(self, item):
         if self.get_option('field') == 'all':
             return item
         if self.get_option('field') in item:
             return item[self.get_option('field')]
         return item
 
-    def fn_find(self, query: str) -> dict:
+    def fn_find(self, query):
         try:
             self.display.vv(
                 msg='Searching matching passwords for query : "{q}"'.format(q=query))
@@ -153,4 +153,4 @@ class LookupModule(LookupBase, TpmPasswordApi):
 
         except Exception as e:
             msg = 'Query "{q}" did not match any result'.format(q=query)
-            raise AnsibleError(msg) from e
+            raise AnsibleError(e, msg)

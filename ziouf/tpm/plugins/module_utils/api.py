@@ -71,7 +71,7 @@ class TpmApiBase():
             'tpm_ssl_verify': True,
         }
 
-    def __init__(self, config: dict = None) -> None:
+    def __init__(self, config = None):
         self.config = dict_merge(TpmApiBase.default_config(), config or {})
 
         # Determine which login method to use
@@ -81,7 +81,7 @@ class TpmApiBase():
             self.config.pop('tpm_username')
             self.config.pop('tpm_password')
 
-    def __get_headers(self, path: str, data: dict = None):
+    def __get_headers(self, path, data = None):
         if self.config.get('use_hmac', False):
             timestamp = str(int(time.time()))
             msg_data = [path, timestamp] + ([json.dumps(data)] if data else [])
@@ -94,8 +94,8 @@ class TpmApiBase():
         # Else, return default headers
         return TpmApiBase.default_headers()
 
-    def __sha256_signature(self, msg: str) -> str:
-        key: str = self.config.get('tpm_private_key')
+    def __sha256_signature(self, msg):
+        key = self.config.get('tpm_private_key')
 
         return hmac.new(
             digestmod=hashlib.sha256,
@@ -103,13 +103,13 @@ class TpmApiBase():
             msg=codecs.encode(msg),
         ).hexdigest()
 
-    def __get_url(self, path: str) -> str:
+    def __get_url(self, path):
         return 'https://{host}/index.php/{path}'.format(
             host=self.config.get('tpm_hostname'),
             path=path
         )
 
-    def _http_get(self, path: str):
+    def _http_get(self, path):
         r = open_url(self.__get_url(path), method='GET',
                      headers=self.__get_headers(path),
                      url_username=self.config.get('tpm_username', None),
@@ -132,7 +132,7 @@ class TpmApiBase():
 
         raise OpenUrlError('HTTP {s} - Failed to GET data'.format(s=r.status))
 
-    def _http_post(self, path: str, body: dict = None):
+    def _http_post(self, path, body = None):
         r = open_url(self.__get_url(path), method='POST',
                      headers=self.__get_headers(path, data=body),
                      data=body,
@@ -147,7 +147,7 @@ class TpmApiBase():
 
         raise OpenUrlError('HTTP {s} - Failed to POST data'.format(s=r.status))
 
-    def _http_put(self, path: str, body: dict = None):
+    def _http_put(self, path, body = None):
         r = open_url(self.__get_url(path), method='PUT',
                      headers=self.__get_headers(path, data=body),
                      data=body,
@@ -162,7 +162,7 @@ class TpmApiBase():
 
         raise OpenUrlError('HTTP {s} - Failed to PUT data'.format(s=r.status))
 
-    def _http_delete(self, path: str):
+    def _http_delete(self, path):
         r = open_url(self.__get_url(path), method='DELETE',
                      headers=self.__get_headers(path),
                      url_username=self.config.get('tpm_username', None),
@@ -180,16 +180,16 @@ class TpmApiBase():
 class TpmPasswordApi(TpmApiBase):
     """TPM Password API implementation"""
 
-    def getById(self, id: int = 0):
+    def getById(self, id = 0):
         '''
         Return data found from TPM for the given ID
         '''
         try:
             return self._http_get(path='api/v4/passwords/{id}.json'.format(id=id))
         except Exception as e:
-            raise GetError() from e
+            raise GetError(e)
 
-    def find(self, query_str: str = ''):
+    def find(self, query_str = ''):
         '''
         Return data found from TPM for the given query string
         '''
@@ -199,9 +199,9 @@ class TpmPasswordApi(TpmApiBase):
                     q=quote(query_str.encode('utf-8'))),
             )
         except Exception as e:
-            raise FindError() from e
+            raise FindError(e)
 
-    def findFirst(self, query_str: str = '', default=None):
+    def findFirst(self, query_str = '', default=None):
         '''
         Return first find result
         '''
@@ -214,26 +214,26 @@ class TpmPasswordApi(TpmApiBase):
         try:
             return self._http_get(path='api/v4/generate_password.json')
         except Exception as e:
-            raise GenerateError() from e
+            raise GenerateError(e)
 
-    def create(self, project_name: str, name: str,
-               tags: list = None,
-               access_info: str = None,
-               username: str = None,
-               email: str = None,
-               password: str = None,
-               expiry_date: str = None,
-               notes: str = None,
-               custom_data1: str = None,
-               custom_data2: str = None,
-               custom_data3: str = None,
-               custom_data4: str = None,
-               custom_data5: str = None,
-               custom_data6: str = None,
-               custom_data7: str = None,
-               custom_data8: str = None,
-               custom_data9: str = None,
-               custom_data10: str = None,
+    def create(self, project_name, name,
+               tags = None,
+               access_info = None,
+               username = None,
+               email = None,
+               password = None,
+               expiry_date = None,
+               notes = None,
+               custom_data1 = None,
+               custom_data2 = None,
+               custom_data3 = None,
+               custom_data4 = None,
+               custom_data5 = None,
+               custom_data6 = None,
+               custom_data7 = None,
+               custom_data8 = None,
+               custom_data9 = None,
+               custom_data10 = None,
                ):
         '''
         Return newly created password
@@ -271,26 +271,26 @@ class TpmPasswordApi(TpmApiBase):
             return self.getById(r['id'])
 
         except Exception as e:
-            raise CreateError() from e
+            raise CreateError(e)
 
-    def update(self, id: str, name: str,
-               tags: list = None,
-               access_info: str = None,
-               username: str = None,
-               email: str = None,
-               password: str = None,
-               expiry_date: str = None,
-               notes: str = None,
-               custom_data1: str = None,
-               custom_data2: str = None,
-               custom_data3: str = None,
-               custom_data4: str = None,
-               custom_data5: str = None,
-               custom_data6: str = None,
-               custom_data7: str = None,
-               custom_data8: str = None,
-               custom_data9: str = None,
-               custom_data10: str = None,
+    def update(self, id, name,
+               tags = None,
+               access_info = None,
+               username = None,
+               email = None,
+               password = None,
+               expiry_date = None,
+               notes = None,
+               custom_data1 = None,
+               custom_data2 = None,
+               custom_data3 = None,
+               custom_data4 = None,
+               custom_data5 = None,
+               custom_data6 = None,
+               custom_data7 = None,
+               custom_data8 = None,
+               custom_data9 = None,
+               custom_data10 = None,
                ):
         '''
         Return updated password
@@ -336,20 +336,20 @@ class TpmPasswordApi(TpmApiBase):
             return self.getById(id)
 
         except Exception as e:
-            raise UpdateError() from e
+            raise UpdateError(e)
 
 
 class TpmProjectApi(TpmApiBase):
     """TPM Project API implementation"""
 
-    def getById(self, id: int):
+    def getById(self, id):
         '''
         Return data found from TPM for the given ID
         '''
         try:
             return self._http_get(path='api/v4/projects/{id}.json'.format(id=id))
         except Exception as e:
-            raise GetError() from e
+            raise GetError(e)
 
     def find(self, query_str=''):
         '''
@@ -361,7 +361,7 @@ class TpmProjectApi(TpmApiBase):
                     q=quote(query_str.encode('utf-8')))
             )
         except Exception as e:
-            raise FindError() from e
+            raise FindError(e)
 
     def findFirst(self, query_str='', default=None):
         '''
@@ -369,7 +369,7 @@ class TpmProjectApi(TpmApiBase):
         '''
         return next((i for i in self.find(query_str)), default)
 
-    def create(self, name: str, parent_id: int, tags: list = None, notes: str = None):
+    def create(self, name, parent_id, tags = None, notes = None):
         '''
         Return newly created project
         '''
@@ -389,9 +389,9 @@ class TpmProjectApi(TpmApiBase):
             return self.getById(r['id'])
 
         except Exception as e:
-            raise CreateError() from e
+            raise CreateError(e)
 
-    def update(self, id: int, name: str, tags: list = None, notes: str = None):
+    def update(self, id, name, tags = None, notes = None):
         '''
         Return updated project
         '''
@@ -412,7 +412,7 @@ class TpmProjectApi(TpmApiBase):
             return self.getById(r['id'])
 
         except Exception as e:
-            raise CreateError() from e
+            raise CreateError(e)
 
     def delete(self, id):
         '''
@@ -425,4 +425,4 @@ class TpmProjectApi(TpmApiBase):
             return "Successfully deleted project"
 
         except Exception as e:
-            raise DeleteError() from e
+            raise DeleteError(e)
