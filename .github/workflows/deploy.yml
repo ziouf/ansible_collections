@@ -29,10 +29,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: |-
-          ls -lah 
 
       - uses: actions/checkout@v2
+      
+      - run: |-
+          ls -lah 
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
