@@ -11,7 +11,7 @@ jobs:
   test:
     strategy:
       fail-fast: true
-      max-parallel: 1
+      max-parallel: 2
       matrix:
         python-version: 
         - 2.7
@@ -29,11 +29,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - uses: actions/checkout@v2
-      
-      - run: |-
-          ls -lah 
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -46,16 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: >-
-          python -m pip install 
-          ansible
-          cryptography
-          jinja2
-          mock
-          pytest
-          pytest-mock
-          pytest-xdist
-          pyyaml
-          resolvelib
+          python -m pip install -r .github/requierments/${{ github.job }}.txt
 
       - name: Prepare tests
         run: |-
@@ -84,9 +71,10 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install dependencies
-        run: python -m pip install ansible
+        run: >-
+          python -m pip install -r .github/requierments/${{ github.job }}.txt
 
       - name: Deploy collections
-        run: ansible-playbook -i 'localhost,' ${{github.action_path}}/playbooks/deploy.yml -vvv
+        run: ansible-playbook -i 'localhost,' .github/playbooks/deploy.yml -vvv
         env:
           ANSIBLE_GALAXY_TOKEN: ${{ secrets.ANSIBLE_GALAXY_TOKEN }}
